@@ -1,19 +1,21 @@
-// Direct AWS S3 client using CloudFront URLs
-const REGION = process.env.REACT_APP_AWS_REGION || "us-east-1"; 
-const BUCKET_NAME = process.env.REACT_APP_S3_BUCKET || "salvin-nlp-project";
-const CLOUDFRONT_DOMAIN = process.env.REACT_APP_CLOUDFRONT_DOMAIN || "YOUR_CLOUDFRONT_DOMAIN.cloudfront.net";
+// Direct AWS S3 client using direct URLs
+const REGION = "us-east-1"; 
+const BUCKET_NAME = "salvin-nlp-project";
+
+// S3 URL for direct access
+const S3_BASE_URL = `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com`;
 
 export default class AwsS3Client {
   /**
-   * Get a CloudFront URL for a video
+   * Get a direct URL for a video in S3
    * @param {string} key - Video filename
-   * @returns {string} - CloudFront URL
+   * @returns {string} - Direct URL
    */
   static getVideoUrl(key) {
     try {
-      console.log("Getting CloudFront URL for:", key);
-      const url = `https://${CLOUDFRONT_DOMAIN}/${encodeURIComponent(key)}`;
-      console.log("Generated URL:", url);
+      console.log("Getting direct URL for:", key);
+      const url = `${S3_BASE_URL}/${encodeURIComponent(key)}`;
+      console.log("Generated URL for S3 object:", url);
       return url;
     } catch (error) {
       console.error("Error getting URL:", error);
@@ -34,7 +36,8 @@ export default class AwsS3Client {
    */
   static async listObjects() {
     try {
-      console.log("Attempting to list objects from CloudFront distribution");
+      // For listing objects, we return a static success message
+      console.log("Attempting to list objects from public bucket");
       return [];
     } catch (error) {
       console.error("Error listing objects:", error);
