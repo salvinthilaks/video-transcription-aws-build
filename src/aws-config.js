@@ -1,23 +1,19 @@
 // AWS Configuration
 import { Amplify } from 'aws-amplify';
 
-// Configure Amplify
+// Configure Amplify with v6 format
 Amplify.configure({
-  // Auth configuration
   Auth: {
-    // For unauthenticated access to S3 bucket
-    identityPoolId: 'us-east-1_bcSgjqGPL', // Replace this with your actual Cognito Identity Pool ID
-    region: 'us-east-1',
+    Cognito: {
+      // Identity Pools, NOT User Pools
+      identityPoolId: 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', // ← This is the correct format
+      region: 'us-east-1'
+    }
   },
-  // Storage configuration
   Storage: {
-    AWSS3: {
-      bucket: 'salvin-nlp-project', // Replace with your actual S3 bucket name
-      region: 'us-east-1',
-      level: 'public',
-      customPrefix: {
-        public: ''
-      }
+    S3: {
+      bucket: 'salvin-nlp-project',
+      region: 'us-east-1'
     }
   }
 });

@@ -16,7 +16,6 @@ export default class S3Service {
       const result = await getUrl({
         key,
         options: {
-          accessLevel: 'public',
           expiresIn
         }
       });
@@ -39,10 +38,7 @@ export default class S3Service {
       console.log('Listing S3 objects with prefix:', path);
       
       const result = await list({
-        prefix: path,
-        options: {
-          accessLevel: 'public'
-        }
+        prefix: path
       });
       
       console.log('S3 list result:', result);
