@@ -1,0 +1,39 @@
+.dashboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dashboard-header {
+  padding: 20px;
+  background-color: #343a40;
+  color: white;
+}
+
+.dashboard-header h1 {
+  margin-bottom: 20px;
+}
+
+.dashboard-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar-col, .video-col {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.loading, .error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  color: #6c757d;
+}
+
+.error {
+  color: #dc3545;
+} 
