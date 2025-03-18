@@ -15,26 +15,18 @@ const VideoPlayer = ({ video }) => {
     if (video && video['Video Name']) {
       setLoading(true);
       
-      // In a production app, we would fetch the video URL from S3
-      // This code is commented out since it requires actual AWS credentials
       // Fetch the video URL from S3
-      /*
       S3Service.getSignedUrl(video['Video Name'])
         .then(url => {
+          console.log('S3 video URL:', url); // Debug URL
           setVideoUrl(url);
           setLoading(false);
         })
         .catch(err => {
           console.error('Error fetching video URL:', err);
-          setError('Failed to load video URL');
+          setError('Failed to load video URL: ' + err.message);
           setLoading(false);
         });
-      */
-      
-      // For now, simulate loading
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
     }
   }, [video]);
 

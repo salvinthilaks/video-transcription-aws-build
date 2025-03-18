@@ -10,15 +10,19 @@ export default class S3Service {
    */
   static async getSignedUrl(key, expiresIn = 3600) {
     try {
+      console.log('Fetching S3 URL for:', key);
+      
       // Get a signed URL from S3
-      const signedURL = await getUrl({
+      const result = await getUrl({
         key: key,
         options: {
           expiresIn: expiresIn,
-          validateObjectExistence: true
+          accessLevel: 'public'
         }
       });
-      return signedURL.url;
+      
+      console.log('S3 result:', result);
+      return result.url;
     } catch (error) {
       console.error('Error getting signed URL from S3:', error);
       throw error;
@@ -32,12 +36,16 @@ export default class S3Service {
    */
   static async listVideos(path = '') {
     try {
+      console.log('Listing S3 objects with prefix:', path);
+      
       const result = await list({
         prefix: path,
         options: {
-          pageSize: 100
+          accessLevel: 'public'
         }
       });
+      
+      console.log('S3 list result:', result);
       return result.items;
     } catch (error) {
       console.error('Error listing videos from S3:', error);
