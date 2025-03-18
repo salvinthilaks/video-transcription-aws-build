@@ -6,7 +6,7 @@ Amplify.configure({
   Auth: {
     Cognito: {
       // Identity Pools, NOT User Pools
-      identityPoolId: 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', // ← This is the correct format
+      identityPoolId: 'us-east-1:04681bd1-0509-430b-8dd2-cb20d10091dc', // ← This is the correct format
       region: 'us-east-1'
     }
   },
