@@ -6,14 +6,18 @@ const VideoPlayer = ({ video }) => {
   const [videoUrl, setVideoUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [debugInfo, setDebugInfo] = useState(null);
 
   useEffect(() => {
     // Reset state when video changes
     setVideoUrl(null);
     setError(null);
+    setDebugInfo(null);
     
     if (video && video['Video Name']) {
       setLoading(true);
+      
+      console.log('VideoPlayer: Fetching video URL for', video['Video Name']);
       
       // Fetch the video URL from S3
       S3Service.getSignedUrl(video['Video Name'])
@@ -21,11 +25,26 @@ const VideoPlayer = ({ video }) => {
           console.log('S3 video URL:', url); // Debug URL
           setVideoUrl(url);
           setLoading(false);
+          
+          // Store debug info
+          setDebugInfo({
+            videoName: video['Video Name'],
+            url: url,
+            timestamp: new Date().toISOString()
+          });
         })
         .catch(err => {
           console.error('Error fetching video URL:', err);
           setError('Failed to load video URL: ' + err.message);
           setLoading(false);
+          
+          // Store debug info
+          setDebugInfo({
+            videoName: video['Video Name'],
+            error: err.message,
+            stack: err.stack,
+            timestamp: new Date().toISOString()
+          });
         });
     }
   }, [video]);
@@ -54,6 +73,12 @@ const VideoPlayer = ({ video }) => {
         {error && (
           <div className="video-placeholder video-error">
             <p>{error}</p>
+            {debugInfo && (
+              <details>
+                <summary>Debug Info</summary>
+                <pre className="debug-info">{JSON.stringify(debugInfo, null, 2)}</pre>
+              </details>
+            )}
           </div>
         )}
         

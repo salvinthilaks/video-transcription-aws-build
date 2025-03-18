@@ -14,10 +14,10 @@ export default class S3Service {
       
       // Get a signed URL from S3
       const result = await getUrl({
-        key: key,
+        key,
         options: {
-          expiresIn: expiresIn,
-          accessLevel: 'public'
+          accessLevel: 'public',
+          expiresIn
         }
       });
       
@@ -46,7 +46,7 @@ export default class S3Service {
       });
       
       console.log('S3 list result:', result);
-      return result.items;
+      return result.items || [];
     } catch (error) {
       console.error('Error listing videos from S3:', error);
       throw error;

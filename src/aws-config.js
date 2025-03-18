@@ -6,17 +6,17 @@ Amplify.configure({
   // Auth configuration
   Auth: {
     // For unauthenticated access to S3 bucket
-    identityPoolId: 'your-identity-pool-id', // Replace with your actual identity pool ID
-    region: 'us-east-1', // Replace with your actual region
+    identityPoolId: 'us-east-1_bcSgjqGPL', // Replace this with your actual Cognito Identity Pool ID
+    region: 'us-east-1',
   },
   // Storage configuration
   Storage: {
     AWSS3: {
-      bucket: 'your-s3-bucket-name', // Replace with your actual S3 bucket name
-      region: 'us-east-1', // Replace with your actual region
-      level: 'public', // This specifies that we're using the public access level
+      bucket: 'salvin-nlp-project', // Replace with your actual S3 bucket name
+      region: 'us-east-1',
+      level: 'public',
       customPrefix: {
-        public: '' // Don't add any prefix to public items
+        public: ''
       }
     }
   }

@@ -46,10 +46,24 @@
   justify-content: center;
   color: white;
   background-color: #343a40;
+  overflow: auto;
+  padding: 20px;
 }
 
 .video-error {
   background-color: #dc3545;
+}
+
+.debug-info {
+  text-align: left;
+  font-size: 0.8rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  max-width: 100%;
+  overflow-x: auto;
+  color: #f8f9fa;
 }
 
 .video-element {
