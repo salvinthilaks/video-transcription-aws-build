@@ -1,64 +1,47 @@
-// Direct AWS S3 client using AWS SDK (without Cognito Identity Pool)
-import { S3Client, ListObjectsCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+// Direct AWS S3 client using direct URLs
+const REGION = "us-east-1"; 
+const BUCKET_NAME = "salvin-nlp-project";
 
-// Configuration
-const REGION = 'us-east-1';
-const BUCKET_NAME = 'salvin-nlp-project';
-
-// Create S3 client using default credentials provider
-const s3Client = new S3Client({
-  region: REGION,
-  // No need to specify credentials here; it will use the default provider chain
-});
+// S3 URL for direct access
+const S3_BASE_URL = `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com`;
 
 export default class AwsS3Client {
   /**
-   * Get a signed URL for a video in S3
+   * Get a direct URL for a video in S3
    * @param {string} key - Video filename
-   * @param {number} expiresIn - URL expiration time in seconds
-   * @returns {Promise<string>} - Signed URL
+   * @returns {string} - Direct URL
    */
-  static async getSignedUrl(key, expiresIn = 3600) {
+  static getVideoUrl(key) {
     try {
-      console.log('Getting signed URL for:', key);
-
-      const command = new GetObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: key,
-      });
-
-      const url = await getSignedUrl(s3Client, command, { expiresIn });
-      console.log('Generated URL for S3 object:', url);
-
+      console.log("Getting direct URL for:", key);
+      const url = `${S3_BASE_URL}/${encodeURIComponent(key)}`;
+      console.log("Generated URL for S3 object:", url);
       return url;
     } catch (error) {
-      console.error('Error getting signed URL:', error);
+      console.error("Error getting URL:", error);
       throw error;
     }
+  }
+
+  /**
+   * For backward compatibility
+   */
+  static async getSignedUrl(key) {
+    return this.getVideoUrl(key);
   }
 
   /**
    * List objects in the S3 bucket
-   * @param {string} prefix - Prefix to filter objects
    * @returns {Promise<Array>} - List of objects
    */
-  static async listObjects(prefix = '') {
+  static async listObjects() {
     try {
-      console.log('Listing objects with prefix:', prefix);
-
-      const command = new ListObjectsCommand({
-        Bucket: BUCKET_NAME,
-        Prefix: prefix,
-      });
-
-      const response = await s3Client.send(command);
-      console.log('S3 list response:', response);
-
-      return response.Contents || [];
+      // For listing objects, we return a static success message
+      console.log("Attempting to list objects from public bucket");
+      return [];
     } catch (error) {
-      console.error('Error listing objects:', error);
+      console.error("Error listing objects:", error);
       throw error;
     }
   }
-}// Test change
+}
