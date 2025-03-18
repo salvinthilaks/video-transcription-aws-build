@@ -1,6 +1,3 @@
-// First import AWS configuration before anything else
-import './aws-config';
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
