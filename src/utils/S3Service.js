@@ -1,4 +1,4 @@
-import { Amplify, Storage } from '@aws-amplify/storage';
+import { Storage } from 'aws-amplify';
 
 export default class S3Service {
   /**
