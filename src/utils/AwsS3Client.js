@@ -6,13 +6,9 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 const REGION = 'us-east-1';
 const BUCKET_NAME = 'salvin-nlp-project';
 
-// Create S3 client with explicit credentials (replace with your own method of providing credentials)
+// Create S3 client using default credentials provider
 const s3Client = new S3Client({
   region: REGION,
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY_ID, // Set your AWS Access Key ID
-    secretAccessKey: process.env.SECRET_ACCESS_KEY, // Set your AWS Secret Access Key
-  },
 });
 
 export default class AwsS3Client {
