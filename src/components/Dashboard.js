@@ -64,7 +64,7 @@ const Dashboard = () => {
     <Container fluid className="dashboard-container">
       <Row className="dashboard-header">
         <Col>
-          <h1>Video Transcription Dashboard</h1>
+          <h1>Video Transcription</h1>
           <SearchBar onSearch={handleSearch} uniqueWords={uniqueWords} />
         </Col>
       </Row>
