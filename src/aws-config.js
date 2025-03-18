@@ -3,7 +3,7 @@ import { Amplify } from 'aws-amplify';
 
 // Define region and identity pool ID
 const region = 'us-east-1';
-const identityPoolId = 'us-east-1:04681bd1-0509-430b-8dd2-cb20d10091dc';
+const identityPoolId = 'us-east-1:398e67d9-28dd-4b2d-989d-8f475d23da6e';
 const bucketName = 'salvin-nlp-project';
 
 console.log('Configuring Amplify with:', {
