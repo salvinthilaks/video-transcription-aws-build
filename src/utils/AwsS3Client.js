@@ -6,7 +6,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // Configuration
 const REGION = 'us-east-1';
-const IDENTITY_POOL_ID = 'us-east-1:04681bd1-0509-430b-8dd2-cb20d10091dc';
+const IDENTITY_POOL_ID = 'us-east-1:398e67d9-28dd-4b2d-989d-8f475d23da6e';
 const BUCKET_NAME = 'salvin-nlp-project';
 
 // Create credentials from Cognito Identity Pool (unauthenticated)
