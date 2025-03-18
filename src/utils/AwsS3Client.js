@@ -9,6 +9,7 @@ const BUCKET_NAME = 'salvin-nlp-project';
 // Create S3 client using default credentials provider
 const s3Client = new S3Client({
   region: REGION,
+  // No need to specify credentials here; it will use the default provider chain
 });
 
 export default class AwsS3Client {
