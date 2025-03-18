@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Sidebar from './Sidebar';
 import VideoPlayer from './VideoPlayer';
 import SearchBar from './SearchBar';
-import S3Service from '../utils/S3Service';
+import AwsS3Client from '../utils/AwsS3Client';
 import { parseCSV, searchTranscriptions, extractUniqueWords } from '../utils/csvParser';
 import './Dashboard.css';
 
@@ -61,7 +61,7 @@ const Dashboard = () => {
     
     try {
       // Try to list objects in the bucket
-      const items = await S3Service.listVideos();
+      const items = await AwsS3Client.listObjects();
       setS3TestResult({
         success: true,
         message: `Success! Found ${items.length} items in the bucket.`,
@@ -111,7 +111,7 @@ const Dashboard = () => {
             <div className={`s3-test-result ${s3TestResult.success ? 'success' : 'error'}`}>
               <p>{s3TestResult.message}</p>
               {s3TestResult.success && s3TestResult.data && s3TestResult.data.length > 0 && (
-                <p>First item: {s3TestResult.data[0].key}</p>
+                <p>First item: {s3TestResult.data[0].Key}</p>
               )}
             </div>
           )}

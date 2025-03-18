@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import S3Service from '../utils/S3Service';
+import AwsS3Client from '../utils/AwsS3Client';
 import './VideoPlayer.css';
 
 const VideoPlayer = ({ video }) => {
@@ -20,7 +20,7 @@ const VideoPlayer = ({ video }) => {
       console.log('VideoPlayer: Fetching video URL for', video['Video Name']);
       
       // Fetch the video URL from S3
-      S3Service.getSignedUrl(video['Video Name'])
+      AwsS3Client.getSignedUrl(video['Video Name'])
         .then(url => {
           console.log('S3 video URL:', url); // Debug URL
           setVideoUrl(url);
