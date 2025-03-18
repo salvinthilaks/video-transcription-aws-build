@@ -8,14 +8,14 @@ const awsConfig = {
   // Amazon S3 configurations
   Storage: {
     AWSS3: {
-      bucket: 'your-actual-bucket-name', // Your actual S3 bucket name
+      bucket: 'salvin-nlp-project', // Your actual S3 bucket name
       region: 'us-east-1', // Your actual AWS region
     }
   },
   
   // Auth configurations
   Auth: {
-    identityPoolId: 'your-actual-identity-pool-id',
+    identityPoolId: 'us-east-1_bcSgjqGPL',
     region: 'us-east-1',
   }
 };
