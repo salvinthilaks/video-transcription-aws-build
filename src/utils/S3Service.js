@@ -1,4 +1,5 @@
-import { Storage } from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
+import { getUrl, list } from 'aws-amplify/storage';
 
 export default class S3Service {
   /**
@@ -10,11 +11,14 @@ export default class S3Service {
   static async getSignedUrl(key, expiresIn = 3600) {
     try {
       // Get a signed URL from S3
-      const signedURL = await Storage.get(key, {
-        expires: expiresIn,
-        validateObjectExistence: true
+      const signedURL = await getUrl({
+        key: key,
+        options: {
+          expiresIn: expiresIn,
+          validateObjectExistence: true
+        }
       });
-      return signedURL;
+      return signedURL.url;
     } catch (error) {
       console.error('Error getting signed URL from S3:', error);
       throw error;
@@ -28,10 +32,13 @@ export default class S3Service {
    */
   static async listVideos(path = '') {
     try {
-      const result = await Storage.list(path, {
-        pageSize: 100,
+      const result = await list({
+        prefix: path,
+        options: {
+          pageSize: 100
+        }
       });
-      return result.results;
+      return result.items;
     } catch (error) {
       console.error('Error listing videos from S3:', error);
       throw error;
