@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import Sidebar from './Sidebar';
 import VideoPlayer from './VideoPlayer';
 import SearchBar from './SearchBar';
-import AwsS3Client from '../utils/AwsS3Client';
 import { parseCSV, searchTranscriptions, extractUniqueWords } from '../utils/csvParser';
 import './Dashboard.css';
 
@@ -14,8 +13,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [uniqueWords, setUniqueWords] = useState([]);
-  const [testingS3, setTestingS3] = useState(false);
-  const [s3TestResult, setS3TestResult] = useState(null);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -55,29 +52,6 @@ const Dashboard = () => {
     setSelectedVideo(video);
   };
 
-  const testS3Connection = async () => {
-    setTestingS3(true);
-    setS3TestResult(null);
-    
-    try {
-      // Try to list objects in the bucket
-      const items = await AwsS3Client.listObjects();
-      setS3TestResult({
-        success: true,
-        message: `Success! Found ${items.length} items in the bucket.`,
-        data: items
-      });
-    } catch (error) {
-      setS3TestResult({
-        success: false,
-        message: `Error: ${error.message}`,
-        error: error
-      });
-    } finally {
-      setTestingS3(false);
-    }
-  };
-
   if (loading) {
     return <div className="loading">Loading videos...</div>;
   }
@@ -92,29 +66,6 @@ const Dashboard = () => {
         <Col>
           <h1>Video Transcription Dashboard</h1>
           <SearchBar onSearch={handleSearch} uniqueWords={uniqueWords} />
-        </Col>
-      </Row>
-      
-      {/* S3 Test Button */}
-      <Row className="s3-test-row">
-        <Col>
-          <Button 
-            variant="info" 
-            onClick={testS3Connection} 
-            disabled={testingS3}
-            className="s3-test-button"
-          >
-            {testingS3 ? 'Testing S3 Connection...' : 'Test S3 Connection'}
-          </Button>
-          
-          {s3TestResult && (
-            <div className={`s3-test-result ${s3TestResult.success ? 'success' : 'error'}`}>
-              <p>{s3TestResult.message}</p>
-              {s3TestResult.success && s3TestResult.data && s3TestResult.data.length > 0 && (
-                <p>First item: {s3TestResult.data[0].Key}</p>
-              )}
-            </div>
-          )}
         </Col>
       </Row>
       
