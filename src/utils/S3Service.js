@@ -1,6 +1,9 @@
 import { Amplify } from 'aws-amplify';
 import { getUrl, list } from 'aws-amplify/storage';
 
+// S3 bucket name
+const BUCKET_NAME = 'salvin-nlp-project';
+
 export default class S3Service {
   /**
    * Get a signed URL for a video from S3
@@ -10,13 +13,14 @@ export default class S3Service {
    */
   static async getSignedUrl(key, expiresIn = 3600) {
     try {
-      console.log('Fetching S3 URL for:', key);
+      console.log('Fetching S3 URL for:', key, 'from bucket:', BUCKET_NAME);
       
       // Get a signed URL from S3
       const result = await getUrl({
         key,
         options: {
-          expiresIn
+          expiresIn,
+          bucket: BUCKET_NAME // Explicitly specify bucket
         }
       });
       
@@ -35,10 +39,13 @@ export default class S3Service {
    */
   static async listVideos(path = '') {
     try {
-      console.log('Listing S3 objects with prefix:', path);
+      console.log('Listing S3 objects with prefix:', path, 'from bucket:', BUCKET_NAME);
       
       const result = await list({
-        prefix: path
+        prefix: path,
+        options: {
+          bucket: BUCKET_NAME // Explicitly specify bucket
+        }
       });
       
       console.log('S3 list result:', result);
