@@ -9,6 +9,8 @@ const VideoPlayer = ({ video, allVideos }) => {
   const [debugInfo, setDebugInfo] = useState(null);
   const [keywords, setKeywords] = useState([]);
   const [recommendedVideos, setRecommendedVideos] = useState([]);
+  const [videoLoadingProgress, setVideoLoadingProgress] = useState(0);
+  const [videoReady, setVideoReady] = useState(false);
 
   // Effect for loading video and keywords
   useEffect(() => {
@@ -18,6 +20,8 @@ const VideoPlayer = ({ video, allVideos }) => {
     setDebugInfo(null);
     setKeywords([]);
     setRecommendedVideos([]);
+    setVideoLoadingProgress(0);
+    setVideoReady(false);
 
     if (!video || !video["Video Name"]) {
       return;
@@ -28,47 +32,36 @@ const VideoPlayer = ({ video, allVideos }) => {
     // Function to load keywords from CSV
     const loadKeywords = async () => {
       try {
-        console.log("Loading keywords for video:", video["Video Name"]);
         const response = await fetch('/keywords.csv');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const csvText = await response.text();
-        console.log("CSV content loaded:", csvText.substring(0, 200) + "...");
-        
         const rows = csvText.split('\n');
-        console.log("Total rows in CSV:", rows.length);
         
         // Find the row for the current video
         const videoRow = rows.find(row => {
           const videoName = row.split(',')[0];
-          console.log("Comparing:", videoName, "with:", video["Video Name"]);
           return videoName === video["Video Name"];
         });
 
         if (videoRow) {
-          console.log("Found matching row:", videoRow);
-          // Get everything after the first comma as the keywords string
           const keywordsStr = videoRow.substring(videoRow.indexOf(',') + 1);
           try {
-            // Clean up the keywords string
             const cleanedStr = keywordsStr
-              .replace(/^['"]|['"]$/g, '') // Remove outer quotes
-              .replace(/^\[|\]$/g, '')     // Remove square brackets
-              .split(',')                   // Split by comma
-              .map(k => k.trim())          // Trim whitespace
-              .map(k => k.replace(/^['"]|['"]$/g, '')) // Remove inner quotes
-              .filter(k => k.length > 0);  // Remove empty strings
+              .replace(/^['"]|['"]$/g, '')
+              .replace(/^\[|\]$/g, '')
+              .split(',')
+              .map(k => k.trim())
+              .map(k => k.replace(/^['"]|['"]$/g, ''))
+              .filter(k => k.length > 0);
             
-            console.log("Processed keywords:", cleanedStr);
             setKeywords(cleanedStr);
           } catch (e) {
-            console.error("Error parsing keywords string:", e);
-            console.error("Problematic string:", keywordsStr);
+            console.error("Error parsing keywords:", e);
             setKeywords([]);
           }
         } else {
-          console.log("No matching row found for video:", video["Video Name"]);
           setKeywords([]);
         }
       } catch (err) {
@@ -81,8 +74,31 @@ const VideoPlayer = ({ video, allVideos }) => {
     const loadVideo = async () => {
       try {
         const url = AwsS3Client.getVideoUrl(video["Video Name"]);
-        console.log("S3 video URL:", url);
         setVideoUrl(url);
+
+        // Preload the video
+        const videoElement = new Audio();
+        videoElement.src = url;
+        
+        // Track loading progress
+        videoElement.addEventListener('progress', () => {
+          if (videoElement.buffered.length > 0) {
+            const progress = (videoElement.buffered.end(videoElement.buffered.length - 1) / videoElement.duration) * 100;
+            setVideoLoadingProgress(Math.min(progress, 100));
+          }
+        });
+
+        // Handle video ready
+        videoElement.addEventListener('canplaythrough', () => {
+          setVideoReady(true);
+          setVideoLoadingProgress(100);
+        });
+
+        // Handle errors
+        videoElement.addEventListener('error', (e) => {
+          console.error("Video loading error:", e);
+          setError("Failed to load video. Please try again.");
+        });
 
         setDebugInfo({ 
           videoName: video["Video Name"], 
@@ -97,7 +113,7 @@ const VideoPlayer = ({ video, allVideos }) => {
           const relatedVideos = allVideos.filter(v => 
             v["Module"] === currentModule && 
             v["Video Name"] !== video["Video Name"]
-          ).slice(0, 4); // Show up to 4 related videos
+          ).slice(0, 4);
           setRecommendedVideos(relatedVideos);
         }
       } catch (err) {
@@ -136,7 +152,15 @@ const VideoPlayer = ({ video, allVideos }) => {
       <div className="video-container">
         {loading && (
           <div className="video-placeholder">
+            <div className="loading-spinner"></div>
             <p>Loading video...</p>
+            <div className="loading-progress">
+              <div 
+                className="progress-bar" 
+                style={{ width: `${videoLoadingProgress}%` }}
+              ></div>
+              <span>{Math.round(videoLoadingProgress)}%</span>
+            </div>
           </div>
         )}
         {error && (
@@ -154,9 +178,10 @@ const VideoPlayer = ({ video, allVideos }) => {
           videoUrl ? (
             <video 
               controls 
-              className="video-element" 
+              className={`video-element ${videoReady ? 'video-ready' : ''}`}
               src={videoUrl}
               crossOrigin="anonymous"
+              preload="auto"
             >
               Your browser does not support the video tag.
             </video>
